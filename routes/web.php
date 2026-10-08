@@ -1,15 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EventController;
+use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowingController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReaderController;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('books.index');
-});
-
-Route::get('/events', [EventController::class, 'index'])->name('events.index');
-Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
-Route::post('/events', [EventController::class, 'store'])->name('events.store');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::resource('books', BookController::class);
+Route::resource('authors', AuthorController::class);
+Route::resource('readers', ReaderController::class);
+
+Route::resource('borrowings', BorrowingController::class)->except(['edit', 'update']);
+Route::patch('/borrowings/{borrowing}/return', [BorrowingController::class, 'returnBook'])->name('borrowings.return');

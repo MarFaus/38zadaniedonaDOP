@@ -1,49 +1,64 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
+
+@section('title', 'Добавить книгу')
 
 @section('content')
-    <h2>Добавление книги</h2>
-
-    @if($errors->any())
-        <div>
-            <strong>Ошибки:</strong>
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h1 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem;">Добавление новой книги</h1>
 
     <form action="{{ route('books.store') }}" method="POST">
         @csrf
         <div class="form-group">
-            <label>Название книги</label>
-            <input type="text" name="title" value="{{ old('title') }}" required>
+            <label>Название книги *</label>
+            <input type="text" name="title" value="{{ old('title') }}" class="form-control" required>
         </div>
+
         <div class="form-group">
-            <label>Автор</label>
-            <input type="text" name="author" value="{{ old('author') }}" required>
+            <label>Автор *</label>
+            <select name="author_id" class="form-control" required>
+                <option value="">Выберите автора...</option>
+                @foreach($authors as $author)
+                    <option value="{{ $author->id }}" {{ old('author_id') == $author->id ? 'selected' : '' }}>{{ $author->name }}</option>
+                @endforeach
+            </select>
         </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Жанр</label>
+                <input type="text" name="genre" value="{{ old('genre') }}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Год издания</label>
+                <input type="number" name="year" value="{{ old('year') }}" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>ISBN</label>
+                <input type="text" name="isbn" value="{{ old('isbn') }}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Общее количество *</label>
+                <input type="number" name="quantity" value="{{ old('quantity', 1) }}" class="form-control" min="0" required>
+            </div>
+        </div>
+
         <div class="form-group">
-            <label>Жанр</label>
-            <input type="text" name="genre" value="{{ old('genre') }}">
+            <label>Описание</label>
+            <textarea name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
         </div>
-        <div class="form-group">
-            <label>Год издания</label>
-            <input type="number" name="year" value="{{ old('year') }}">
+
+        <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" name="available" id="available" value="1" {{ old('available', 1) ? 'checked' : '' }}>
+            <label for="available" style="margin-bottom: 0;">Доступна для выдачи</label>
         </div>
-        <div class="form-group">
-            <label>ISBN</label>
-            <input type="text" name="isbn" value="{{ old('isbn') }}">
+
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Сохранить книгу</button>
+            <a href="{{ route('books.index') }}" class="btn btn-secondary">Отмена</a>
         </div>
-        <div>
-            <label>
-                <input type="checkbox" name="available" value="1" checked>
-                Книга доступна
-            </label>
-        </div>
-        <br>
-        <button type="submit" class="btn">Сохранить</button>
-        <a href="{{ route('books.index') }}">Отмена</a>
     </form>
+</div>
 @endsection

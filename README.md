@@ -41,3 +41,56 @@
 1. **Применение миграций**:
    ```bash
    php artisan migrate
+
+
+   это после доп доп задания
+   Структура созданных и обновлённых файлов
+C:\Zadania_doma\38GM
+├── app/
+│   ├── Http/
+│   │   └── Controllers/
+│   │       ├── AuthorController.php
+│   │       ├── BookController.php
+│   │       ├── BorrowingController.php
+│   │       ├── DashboardController.php
+│   │       └── ReaderController.php
+│   └── Models/
+│       ├── Author.php
+│       ├── Book.php
+│       ├── Borrowing.php
+│       └── Reader.php
+├── database/
+│   ├── migrations/
+│   │   ├── 2025_01_01_000001_create_authors_table.php
+│   │   ├── 2025_01_01_000002_create_books_table.php
+│   │   ├── 2025_01_01_000003_create_readers_table.php
+│   │   └── 2025_01_01_000004_create_borrowings_table.php
+│   └── seeders/
+│       └── DatabaseSeeder.php
+├── resources/
+│   └── views/
+│       ├── authors/
+│       │   ├── create.blade.php
+│       │   ├── edit.blade.php
+│       │   ├── index.blade.php
+│       │   └── show.blade.php
+│       ├── books/
+│       │   ├── create.blade.php
+│       │   ├── edit.blade.php
+│       │   ├── index.blade.php
+│       │   └── show.blade.php
+│       ├── borrowings/
+│       │   ├── create.blade.php
+│       │   └── index.blade.php
+│       ├── layouts/
+│       │   └── app.blade.php
+│       ├── readers/
+│       │   ├── create.blade.php
+│       │   ├── edit.blade.php
+│       │   ├── index.blade.php
+│       │   └── show.blade.php
+│       └── dashboard.blade.php
+└── routes/
+    └── web.php
+
+    
