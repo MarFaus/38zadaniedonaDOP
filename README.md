@@ -4,13 +4,11 @@
 
 ---
 
-## 👨‍🎓 Информация об авторе
 
-* **Студент:** Глущенко Евгений Александрович ([MarFaus](https://github.com/MarFaus))
-* **Учебное заведение:** ККПУ «Костанайский политехнический высший колледж»
-* **Специальность:** 06130100 — «Программное обеспечение (по видам)»
-* **Квалификация:** 4S06130103 — «Разработчик программного обеспечения»
-* **Репозиторий:** [38zadaniedonaDOP](https://github.com/MarFaus/38zadaniedonaDOP.git)
+
+ ([MarFaus](https://github.com/MarFaus))
+
+* Репозиторий: [38zadaniedonaDOP](https://github.com/MarFaus/38zadaniedonaDOP.git)
 
 ---
 
