@@ -1,64 +1,85 @@
-# Практическая работа №38: Создание и обработка форм в Laravel
+# 📚 Практическая работа №38: Информационная система «Библиотека» (Laravel 13)
 
-Проект представляет собой веб-приложение для учета и управления мероприятиями, созданное в рамках практической работы №38.
+Развитая информационная система для учета книжного фонда, авторов, читателей и журнала выдачи/возврата книг. Проект выполнен в рамках практической работы №38 (дополнительное расширение функционала с реляционной базой данных).
 
-## 🚀 Назначение проекта
+---
 
-Приложение реализует паттерн **MVC (Model-View-Controller)** и демонстрирует:
-- Работу с базой данных через **Eloquent ORM** (модель `Event`).
-- Защиту от **CSRF-атак** с использованием директивы `@csrf`.
-- Валидацию пользовательских данных на стороне сервера (`$request->validate()`)[cite: 1].
-- Реализацию **GET/POST** форм и безопасного редиректа после создания записи (Post-Redirect-Get)[cite: 1].
-- Поиск записей по базе данных с сохранением состояния формы поиска[cite: 1].
+## 👨‍🎓 Информация об авторе
+
+* **Студент:** Глущенко Евгений Александрович ([MarFaus](https://github.com/MarFaus))
+* **Учебное заведение:** ККПУ «Костанайский политехнический высший колледж»
+* **Специальность:** 06130100 — «Программное обеспечение (по видам)»
+* **Квалификация:** 4S06130103 — «Разработчик программного обеспечения»
+* **Репозиторий:** [38zadaniedonaDOP](https://github.com/MarFaus/38zadaniedonaDOP.git)
+
+---
+
+## 🚀 Основные возможности системы
+
+* **📊 Панель управления (Dashboard):** Сводные карточки ключевых метрик (общее число книг, авторов, зарегистрированных читателей, книг на руках и возвратов) и таблица последних операций.
+* **📖 Каталог книг (Book CRUD):** 
+  * Учет книг с привязкой к авторам через связи Eloquent (`belongsTo`).
+  * Поиск по названию, жанру, ISBN и автору.
+  * Фильтрация книг по жанру и автору.
+  * Динамический контроль остатка экземпляров (автоматический пересчёт доступного количества при выдаче).
+* **✍️ Справочник авторов (Author CRUD):** 
+  * Ведение базы авторов (ФИО, дата рождения, страна, биография).
+  * Просмотр полного списка книг каждого автора (`hasMany`).
+* **👥 Реестр читателей (Reader CRUD):**
+  * Учет читателей с контактными данными (телефон, email, дата рождения).
+  * Персональная карточка читателя с историей всех взятых книг.
+* **🔄 Журнал выдачи книг (Borrowing & Return):**
+  * Оформление выдачи книг с выбором читателя и контролем доступного фонда.
+  * Быстрый возврат книг в один клик с отметкой даты фактического возврата (`returned_at`).
+  * Фильтрация выдач по статусам (`На руках` / `Возвращена`).
 
 ---
 
 ## 🛠 Технологический стек
 
-- **PHP**: ^8.2
-- **Laravel Framework**: ^11.0 / ^12.0 / ^13.0
-- **База данных**: SQLite / PostgreSQL
-- **Шаблонизатор**: Blade[cite: 1]
+* **PHP:** ^8.2 / 8.5+
+* **Laravel Framework:** 13.x
+* **База данных:** SQLite / MySQL / PostgreSQL (с каскадными внешними ключами `cascadeOnDelete`)
+* **Шаблонизатор:** Blade (чистый адаптивный CSS, гарнитура Inter, цветовая индикация статусов)
+* **Архитектура:** MVC + Eloquent Relationships
 
 ---
 
-## 📁 Структура ключевых файлов
+## 🏛 Схема базы данных (Relationships)
 
-| Путь к файлу | Назначение |
-| :--- | :--- |
-| `app/Models/Event.php` | Модель Eloquent с настройкой массового заполнения `$fillable` |
-| `app/Http/Controllers/EventController.php` | Контроллер с методами `index`, `create`, `store` |
-| `database/migrations/*_create_events_table.php` | Миграция структуры таблицы `events` (`name`, `event_date`, `price`, `description`) |
-| `routes/web.php` | Маршруты веб-приложения (`events.index`, `events.create`, `events.store`) |
-| `resources/views/layouts/app.blade.php` | Базовый Blade-макет приложения со стилями |
-| `resources/views/events/index.blade.php` | Страница списка мероприятий и формы поиска |
-| `resources/views/events/create.blade.php` | Форма создания мероприятия с выводом ошибок и сохранёнными значениями `old()` |
+Author (1)
+       │
+       │ hasMany
+       ▼
+    Book (1) ─── hasMany ───► Borrowing (*)
+                                 ▲
+                                 │ belongsTo
+                             Reader (1)
+
+1. **`authors`** `(id, name, birth_date, country, biography)`
+2. **`books`** `(id, title, author_id, genre, year, isbn, quantity, available, description)`
+3. **`readers`** `(id, full_name, phone, email, birth_date)`
+4. **`borrowings`** `(id, book_id, reader_id, borrowed_at, return_date, returned_at, status)`
 
 ---
 
-## ⚙️ Быстрый запуск
+## 📁 Структура ключевых файлов проекта
 
-1. **Применение миграций**:
-   ```bash
-   php artisan migrate
-
-
-   это после доп доп задания
-   Структура созданных и обновлённых файлов
+```text
 C:\Zadania_doma\38GM
 ├── app/
 │   ├── Http/
 │   │   └── Controllers/
-│   │       ├── AuthorController.php
-│   │       ├── BookController.php
-│   │       ├── BorrowingController.php
-│   │       ├── DashboardController.php
-│   │       └── ReaderController.php
+│   │       ├── AuthorController.php      # Управление справочником авторов
+│   │       ├── BookController.php        # Управление каталогом книг и поиском
+│   │       ├── BorrowingController.php   # Выдача, возврат и учет остатков
+│   │       ├── DashboardController.php   # Аналитика и главная страница
+│   │       └── ReaderController.php      # Управление читательскими билетами
 │   └── Models/
-│       ├── Author.php
-│       ├── Book.php
-│       ├── Borrowing.php
-│       └── Reader.php
+│       ├── Author.php                    # Модель автора (hasMany Book)
+│       ├── Book.php                      # Модель книги (belongsTo Author, dynamic availability)
+│       ├── Borrowing.php                 # Модель выдачи (belongsTo Book, Reader)
+│       └── Reader.php                    # Модель читателя (hasMany Borrowing)
 ├── database/
 │   ├── migrations/
 │   │   ├── 2025_01_01_000001_create_authors_table.php
@@ -66,31 +87,47 @@ C:\Zadania_doma\38GM
 │   │   ├── 2025_01_01_000003_create_readers_table.php
 │   │   └── 2025_01_01_000004_create_borrowings_table.php
 │   └── seeders/
-│       └── DatabaseSeeder.php
+│       └── DatabaseSeeder.php            # Тестовые данные (авторы, книги, читатели, выдачи)
 ├── resources/
 │   └── views/
-│       ├── authors/
-│       │   ├── create.blade.php
-│       │   ├── edit.blade.php
-│       │   ├── index.blade.php
-│       │   └── show.blade.php
-│       ├── books/
-│       │   ├── create.blade.php
-│       │   ├── edit.blade.php
-│       │   ├── index.blade.php
-│       │   └── show.blade.php
-│       ├── borrowings/
-│       │   ├── create.blade.php
-│       │   └── index.blade.php
+│       ├── authors/                      # Шаблоны CRUD авторов (index, create, edit, show)
+│       ├── books/                        # Шаблоны CRUD книг (index, create, edit, show)
+│       ├── borrowings/                   # Шаблоны выдачи книг (index, create)
+│       ├── readers/                      # Шаблоны CRUD читателей (index, create, edit, show)
 │       ├── layouts/
-│       │   └── app.blade.php
-│       ├── readers/
-│       │   ├── create.blade.php
-│       │   ├── edit.blade.php
-│       │   ├── index.blade.php
-│       │   └── show.blade.php
-│       └── dashboard.blade.php
+│       │   └── app.blade.php             # Базовый макет с навигацией и стилями
+│       └── dashboard.blade.php           # Аналитическая главная панель
 └── routes/
-    └── web.php
+    └── web.php                           # Маршруты веб-приложения
 
-    
+
+⚙️ Быстрый запуск проекта
+Клонирование репозитория:
+
+Bash
+git clone [https://github.com/MarFaus/38zadaniedonaDOP.git](https://github.com/MarFaus/38zadaniedonaDOP.git)
+cd 38zadaniedonaDOP
+Установка зависимостей Composer (при необходимости):
+
+Bash
+composer install
+Настройка окружения (.env):
+
+Bash
+cp .env.example .env
+php artisan key:generate
+Применение миграций и запуск сидеров (демо-данные):
+
+Bash
+php artisan migrate:fresh --seed
+Запуск локального сервера:
+
+Bash
+php artisan serve
+После запуска откройте браузер по адресу: http://127.0.0.1:8000.
+
+📌 Команды для отправки изменений в Git
+PowerShell
+git add .
+git commit -m "Docs: Обновлен README.md с описанием ИС Библиотека"
+git push origin main
